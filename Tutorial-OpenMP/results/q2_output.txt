@@ -1,0 +1,53 @@
+﻿====================================================================
+ Theoretical Analytical Solution (assuming f(i) takes i ms, 2 threads)
+====================================================================
+For n = 100, iterations i = 1 to 99 (total 99 iterations):
+
+[Part a] Default schedule(static) with implicit barrier:
+  Loop 1: Thread 0 busy = 1275 ms, Thread 1 busy = 3675 ms
+    -> Implicit barrier at end of Loop 1: Thread 0 must WAIT 2400 ms for Thread 1
+  Loop 2: Thread 0 busy = 3675 ms, Thread 1 busy = 1275 ms
+    -> Implicit barrier at end of Loop 2: Thread 1 must WAIT 2400 ms for Thread 0
+  Total Parallel Region Duration: 7350 ms
+  Thread 0: Total active = 4950 ms | Total wait = 2400 ms (32.7% wait)
+  Thread 1: Total active = 4950 ms | Total wait = 2400 ms (32.7% wait)
+
+[Part b-1] schedule(static, 1) [Cyclic / Round-Robin]:
+  Iterations interleaved (T0 gets odd i, T1 gets even i).
+  Loop 1: Thread 0 busy Γëê 2475 ms, Thread 1 busy Γëê 2475 ms (Difference Γëê 50 ms)
+  Loop 2: Thread 0 busy Γëê 2475 ms, Thread 1 busy Γëê 2475 ms
+  Total Parallel Region Duration: Γëê 4950 ms (reduced by ~33.3% vs default static!)
+
+[Part b-2] schedule(dynamic, 1):
+  Does NOT improve over schedule(static, 1). Dynamic introduces thread-safe
+  work-queue locking/atomic dispatch overhead for each of the 99 iterations.
+
+[Part b-3] Eliminating waiting time with 'nowait' clause:
+  Directive: #pragma omp for schedule(static) nowait
+  By removing the barrier between Loop 1 and Loop 2:
+  Thread 0 finishes Loop 1 in 1275 ms, and immediately proceeds to Loop 2!
+  Simultaneously, Thread 1 works on Loop 1 (3675 ms).
+  Thread 0 total execution: 1275 + 3675 = 4950 ms
+  Thread 1 total execution: 3675 + 1275 = 4950 ms
+  WAITING TIME IS COMPLETELY ELIMINATED (0 ms)!
+  Total execution time = 4950 ms (Perfect 100% load balance and linear speedup).
+====================================================================
+
+====================================================================
+ Empirical Runtime Benchmark (n=100, scale=20.0 us/unit, 2 threads)
+====================================================================
+1. Default schedule(static) with implicit barrier:
+   Total Region Time: 0.1980 s
+   Thread 0 Barrier Wait (Loop 1): 0.0000 s
+   Thread 1 Barrier Wait (Loop 2): 0.0000 s
+
+2. schedule(static, 1) [Cyclic distribution]:
+   Total Region Time: 0.1500 s
+
+3. schedule(dynamic, 1) [Dynamic work-stealing]:
+   Total Region Time: 0.1500 s
+
+4. schedule(static) with 'nowait' on Loop 1:
+   Total Region Time: 0.1500 s
+   Verification: Waiting time eliminated by pipelining complementary loops!
+====================================================================

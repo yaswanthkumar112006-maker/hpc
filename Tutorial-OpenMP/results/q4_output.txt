@@ -1,0 +1,22 @@
+﻿====================================================================
+ OpenMP Tutorial 05 - Question 4: Parallel Binary Tree Traversal
+====================================================================
+Tree Depth: 22 | Total Nodes: 4194303 | Task Cutoff Depth: 10
+
+Constructing binary tree in memory... Done in 0.18 s
+
+[1] Sequential Tree Traversal:
+    Sequential Sum: 211812159 | Time: 0.0150 s
+
+[2] OpenMP Task-Based Parallel Tree Traversal:
+--------------------------------------------------------------------------------
+Threads  | Computed Sum     | Time (s)     | Speedup    | Efficiency | Match?  
+--------------------------------------------------------------------------------
+1        | 211812159        | 0.0200       | 0.75      x |      75.0% | MATCH   
+2        | 211812159        | 0.0150       | 1.00      x |      50.0% | MATCH   
+4        | 211812159        | 0.0100       | 1.50      x |      37.5% | MATCH   
+8        | 211812159        | 0.0080       | 1.87      x |      23.4% | MATCH   
+16       | 211812159        | 0.0080       | 1.88      x |      11.7% | MATCH   
+--------------------------------------------------------------------------------
+Thread Safety Verified: Pure hierarchical taskwait guarantees zero race conditions.
+====================================================================

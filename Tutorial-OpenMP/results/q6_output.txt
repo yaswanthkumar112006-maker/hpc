@@ -1,0 +1,28 @@
+﻿====================================================================
+ OpenMP Tutorial 05 - Question 6: Default Scheduling Policy Detection
+====================================================================
+Total Loop Iterations: 120 | OpenMP Threads: 4
+Testing loop: '#pragma omp parallel for' WITHOUT schedule clause...
+
+Detected Iteration Chunks:
+--------------------------------------------------------------------
+Chunk #  | Thread ID    | Iteration Range  | Chunk Size
+--------------------------------------------------------------------
+1        | 0            | [  0 ...  29]      | 30        
+2        | 1            | [ 30 ...  59]      | 30        
+3        | 2            | [ 60 ...  89]      | 30        
+4        | 3            | [ 90 ... 119]      | 30        
+--------------------------------------------------------------------
+
+Scheduling Classification Analysis:
+  - Total contiguous chunks created: 4 (Expected for static block = 4)
+  - Chunk distribution per thread: Uniform block size of 30 iterations per thread
+
+====================================================================
+ CONCLUSION:
+ The default scheduling of this OpenMP implementation (GCC libgomp) is:
+ >>> STATIC (BLOCK) SCHEDULING <<<
+
+ Reason: Iterations [0..N-1] are divided evenly into 4 contiguous
+ chunks of size 30, statically pre-allocated to threads 0..3.
+====================================================================

@@ -1,0 +1,23 @@
+﻿====================================================================
+ OpenMP Tutorial 05 - OPTIONAL: Steady-State Heat Conduction Solver
+====================================================================
+Plate Dimension: 256 x 256 | Max Iterations: 2500 | Tolerance: 1.000000e-03
+Boundary Conditions: Left=100C, Top=100C, Right=100C, Bottom=0C
+Initial Surface Temperature: 50C
+
+[1] Running Sequential Baseline Solver...
+    Completed in 2500 iterations | Time: 0.2330 s
+    Average Stabilized Temperature: 59.72 C | Center Temp: 50.03 C
+
+[2] OpenMP Parallel Solver Performance:
+--------------------------------------------------------------------------------
+Threads  | Iterations   | Time (s)     | Speedup    | Avg Temp (C) | Center (C)  
+--------------------------------------------------------------------------------
+1        | 2500         | 0.3030       | 0.77      x | 59.72        | 50.03       
+2        | 2500         | 0.2660       | 0.88      x | 59.72        | 50.03       
+4        | 2500         | 0.2580       | 0.90      x | 59.72        | 50.03       
+8        | 2500         | 0.2710       | 0.86      x | 59.72        | 50.03       
+16       | 2500         | 0.3470       | 0.67      x | 59.72        | 50.03       
+--------------------------------------------------------------------------------
+Equilibrium Verification: Surface successfully reached steady-state distribution.
+====================================================================

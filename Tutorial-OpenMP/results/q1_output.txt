@@ -1,0 +1,28 @@
+﻿====================================================================
+ OpenMP Tutorial 05 - Question 1: Race Conditions & Synchronization
+====================================================================
+Iterations (n): 1000000 | Array size (m): 50 | Threads: 4
+
+[1] Sequential Execution (Baseline):
+    Time: 0.001000 s | Total Sum: 2750000.00 | Correct: YES
+
+[2] Snippet 1 (No synchronization):
+    Time: 0.013000 s | Total Sum: 759023.50 | Discrepancy: 1990976.50
+    Result: INCORRECT! Lost updates occurred due to DATA RACE.
+
+[3] Snippet 2 (#pragma omp critical):
+    Time: 0.026000 s | Total Sum: 2750000.00 | Slowdown vs Seq: 26.00x
+    Result: CORRECT, but serialized by global mutual exclusion lock!
+
+[4] Snippet 3 (#pragma omp atomic):
+    Time: 0.021000 s | Total Sum: 2750000.00 | Speedup vs Critical: 1.24x
+    Result: CORRECT, hardware-level memory atomicity without coarse locking.
+
+--------------------------------------------------------------------
+Summary Comparison:
+  Method          Correct?   Time (s)     Relative Speed
+  Sequential      YES         0.00100     1.00x
+  No Sync (Race)  NO          0.01300     0.08x (Unsafe)
+  Critical        YES         0.02600     0.04x (Heavy lock contention)
+  Atomic          YES         0.02100     0.05x (Fine-grained atomic)
+====================================================================
