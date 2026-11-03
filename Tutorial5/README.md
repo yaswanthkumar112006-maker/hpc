@@ -408,3 +408,4 @@ In this tutorial, all five core problems and extensions were successfully design
 3. **Non-Blocking Communication:** Proved that `MPI_Isend` and `MPI_Irecv` allow independent CPU computation to overlap with large data transfers, saving over 21 milliseconds on 50 MB messages.
 4. **Ring Topology:** Explored communication deadlock stemming from symmetric blocking calls in circular topologies and verified two deadlock-free communication strategies (`MPI_Sendrecv` and Even-Odd rank scheduling).
 5. **2D Grid & Cartesian Topologies:** Implemented 2D grid neighbor exchange using row-major index mapping and investigated MPI's built-in `MPI_Cart_create` and `MPI_Cart_shift` primitives for automated boundary management.
+
