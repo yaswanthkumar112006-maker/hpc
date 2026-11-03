@@ -1,0 +1,20 @@
+=================================================================
+  Problem 4: Ring Communication Topology (Size = 4 processes)   
+=================================================================
+
+[Process 0] Neighbors -> Previous: 3 | Next: 1
+[Process 3] Neighbors -> Previous: 2 | Next: 0
+[Process 3] Sent 130 to Next (Rank 0) | Received 120 from Previous (Rank 2)
+[Process 3] (Even-Odd) Sent 160 to Rank 0 | Received 110 from Rank 2
+
+--- Step 1: Communication using MPI_Sendrecv ---
+[Process 0] Sent 100 to Next (Rank 1) | Received 130 from Previous (Rank 3)
+
+--- Step 2: Communication using Even-Odd Send/Recv Ordering ---
+[Process 0] (Even-Odd) Sent 10 to Rank 1 | Received 160 from Rank 3
+[Process 1] Neighbors -> Previous: 0 | Next: 2
+[Process 1] Sent 110 to Next (Rank 2) | Received 100 from Previous (Rank 0)
+[Process 1] (Even-Odd) Sent 60 to Rank 2 | Received 10 from Rank 0
+[Process 2] Neighbors -> Previous: 1 | Next: 3
+[Process 2] Sent 120 to Next (Rank 3) | Received 110 from Previous (Rank 1)
+[Process 2] (Even-Odd) Sent 110 to Rank 3 | Received 60 from Rank 1

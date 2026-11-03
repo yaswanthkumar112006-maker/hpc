@@ -1,0 +1,23 @@
+=================================================================
+  Problem 3: Non-Blocking Communication & Computation Overlap   
+  Using MPI_Isend, MPI_Irecv, and MPI_Wait                       
+=================================================================
+
+[Process 1] Received 1 MB via MPI_Irecv: First = 10, Last = 250009
+[Size: 1 MB] Blocking Time: 0.119610 s | Non-Blocking Time: 0.119207 s | Time Saved: 0.000403 s
+[Size: 10 MB] Blocking Time: 0.109266 s | Non-Blocking Time: 0.111917 s | Time Saved: -0.002650 s
+[Process 1] Received 10 MB via MPI_Irecv: First = 10, Last = 2500009
+[Process 1] Received 50 MB via MPI_Irecv: First = 10, Last = 12500009
+[Size: 50 MB] Blocking Time: 0.135769 s | Non-Blocking Time: 0.113964 s | Time Saved: 0.021805 s
+
+========================================================================================
+                        PROBLEM 3: COMPARISON TABLE                                     
+========================================================================================
+Message Size | Blocking Time (s) | Non-Blocking Time (s) | Observation              
+----------------------------------------------------------------------------------------
+1 MB         | 0.119610          | 0.119207              | Overlap reduced total time
+10 MB        | 0.109266          | 0.111917              | Minimal overlap benefit  
+50 MB        | 0.135769          | 0.113964              | Overlap reduced total time
+========================================================================================
+
+Saved comparison data to results/nonblocking_comparison.csv

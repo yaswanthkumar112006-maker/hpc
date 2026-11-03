@@ -1,0 +1,45 @@
+=================================================================
+  Problem 5: Two-Dimensional Grid Topology (2x2 Grid)            
+=================================================================
+
+[Process 0] at Grid Position (row=0, col=0):
+    Up:    NONE (Boundary)
+    Down:  Rank 2
+    Left:  NONE (Boundary)
+    Right: Rank 1
+
+[Process 1] at Grid Position (row=0, col=1):
+    Up:    NONE (Boundary)
+    Down:  Rank 3
+    Left:  Rank 0
+    Right: NONE (Boundary)
+
+[Process 2] at Grid Position (row=1, col=0):
+    Up:    Rank 0
+    Down:  NONE (Boundary)
+    Left:  NONE (Boundary)
+    Right: Rank 3
+
+[Process 3] at Grid Position (row=1, col=1):
+    Up:    Rank 1
+    Down:  NONE (Boundary)
+    Left:  Rank 2
+    Right: NONE (Boundary)
+
+--- Message Exchange Verification ---
+[Process 1] (Sent value 100):
+    Received from DOWN  (Rank 3): 300
+    Received from LEFT  (Rank 0): 0
+
+[Process 2] (Sent value 200):
+    Received from UP    (Rank 0): 0
+    Received from RIGHT (Rank 3): 300
+
+[Process 0] (Sent value 0):
+    Received from DOWN  (Rank 2): 200
+    Received from RIGHT (Rank 1): 100
+
+[Process 3] (Sent value 300):
+    Received from UP    (Rank 1): 100
+    Received from LEFT  (Rank 2): 200
+

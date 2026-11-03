@@ -1,0 +1,46 @@
+=================================================================
+  Problem 5 Extension: MPI Cartesian Virtual Topology            
+  Using MPI_Cart_create and MPI_Cart_shift                       
+=================================================================
+
+[Cartesian Process 0] Coordinates: row=0, col=0
+    Up (Dim 0, -1):    NONE (MPI_PROC_NULL)
+    Down (Dim 0, +1):  Rank 2
+    Left (Dim 1, -1):  NONE (MPI_PROC_NULL)
+    Right (Dim 1, +1): Rank 1
+
+--- Cartesian Grid Exchange Verification ---
+[Cartesian Process 0] (Sent value 25):
+    Received from DOWN  (Rank 2): 75
+    Received from RIGHT (Rank 1): 50
+
+[Cartesian Process 1] Coordinates: row=0, col=1
+    Up (Dim 0, -1):    NONE (MPI_PROC_NULL)
+    Down (Dim 0, +1):  Rank 3
+    Left (Dim 1, -1):  Rank 0
+    Right (Dim 1, +1): NONE (MPI_PROC_NULL)
+
+[Cartesian Process 1] (Sent value 50):
+    Received from DOWN  (Rank 3): 100
+    Received from LEFT  (Rank 0): 25
+
+[Cartesian Process 2] Coordinates: row=1, col=0
+    Up (Dim 0, -1):    Rank 0
+    Down (Dim 0, +1):  NONE (MPI_PROC_NULL)
+    Left (Dim 1, -1):  NONE (MPI_PROC_NULL)
+    Right (Dim 1, +1): Rank 3
+
+[Cartesian Process 2] (Sent value 75):
+    Received from UP    (Rank 0): 25
+    Received from RIGHT (Rank 3): 100
+
+[Cartesian Process 3] Coordinates: row=1, col=1
+    Up (Dim 0, -1):    Rank 1
+    Down (Dim 0, +1):  NONE (MPI_PROC_NULL)
+    Left (Dim 1, -1):  Rank 2
+    Right (Dim 1, +1): NONE (MPI_PROC_NULL)
+
+[Cartesian Process 3] (Sent value 100):
+    Received from UP    (Rank 1): 50
+    Received from LEFT  (Rank 2): 75
+

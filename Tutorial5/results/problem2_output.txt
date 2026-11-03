@@ -1,0 +1,43 @@
+=================================================================
+  Problem 2: Blocking Point-to-Point Communication (MPI_Send/Recv)
+  Testing 1 MB, 10 MB, and 50 MB with 3 trials each
+=================================================================
+
+--- Testing Message Size: 1 MB (250000 integers, ~1000000 bytes) ---
+[Process 1] Received 1 MB (Trial 1): First element = 1, Last element = 250000
+[Process 1] Received 1 MB (Trial 2): First element = 1, Last element = 250000
+[Process 1] Received 1 MB (Trial 3): First element = 1, Last element = 250000
+[Process 0] Trial 1: Elapsed time = 0.000593 seconds
+[Process 0] Trial 2: Elapsed time = 0.000312 seconds
+[Process 0] Trial 3: Elapsed time = 0.000094 seconds
+[Process 0] Average time for 1 MB = 0.000333 seconds
+
+--- Testing Message Size: 10 MB (2500000 integers, ~10000000 bytes) ---
+[Process 1] Received 10 MB (Trial 1): First element = 1, Last element = 2500000
+[Process 0] Trial 1: Elapsed time = 0.005732 seconds
+[Process 1] Received 10 MB (Trial 2): First element = 1, Last element = 2500000
+[Process 0] Trial 2: Elapsed time = 0.004594 seconds
+[Process 1] Received 10 MB (Trial 3): First element = 1, Last element = 2500000
+[Process 0] Trial 3: Elapsed time = 0.001475 seconds
+[Process 0] Average time for 10 MB = 0.003933 seconds
+
+--- Testing Message Size: 50 MB (12500000 integers, ~50000000 bytes) ---
+[Process 1] Received 50 MB (Trial 1): First element = 1, Last element = 12500000
+[Process 0] Trial 1: Elapsed time = 0.041450 seconds
+[Process 1] Received 50 MB (Trial 2): First element = 1, Last element = 12500000
+[Process 0] Trial 2: Elapsed time = 0.019576 seconds
+[Process 1] Received 50 MB (Trial 3): First element = 1, Last element = 12500000
+[Process 0] Trial 3: Elapsed time = 0.018103 seconds
+[Process 0] Average time for 50 MB = 0.026376 seconds
+
+=================================================================
+                   TIMING RESULTS SUMMARY TABLE                  
+=================================================================
+Message Size | Trial 1 (s)  | Trial 2 (s)  | Trial 3 (s)  | Average (s) 
+-----------------------------------------------------------------
+1 MB         | 0.000593     | 0.000312     | 0.000094     | 0.000333    
+10 MB        | 0.005732     | 0.004594     | 0.001475     | 0.003933    
+50 MB        | 0.041450     | 0.019576     | 0.018103     | 0.026376    
+=================================================================
+
+Results saved to results/blocking_results.csv for plotting.
