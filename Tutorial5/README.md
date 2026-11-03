@@ -1,55 +1,58 @@
-# HPC Tutorial 5 - MPI Programming
+# HPC Tutorial 5: MPI Programming Lab Report
 
-This folder contains my solutions and experimental results for HPC Tutorial 5 on MPI (Message Passing Interface).
+Name: Student  
+Course: High Performance Computing (HPC-2026)  
 
-## Folder Structure
-- `src/`: C source code for Problems 1 to 5
-- `bin/`: Compiled executables
-- `results/`: Terminal output text files and CSV data
-- `plots/`: Graph comparing message size and time
-- `Makefile`: Script to build all programs
+---
 
-## How to Compile and Run
+## 1. Overview
+In this lab, I worked on MPI (Message Passing Interface) programming using C. I implemented 5 problems:
+1. Basic Hello World with MPI
+2. Blocking Point-to-Point communication and time measurement
+3. Non-blocking communication and overlapping computation
+4. Ring communication topology
+5. 2D grid topology (and Cartesian communicator extension)
 
-To compile all programs:
+---
+
+## 2. How to Compile and Run
+
 ```bash
+# Compile all programs
 make
-```
 
-To run each problem:
-```bash
-# Problem 1 (test with 2 and 4 processes)
+# Run Problem 1
 mpirun -np 2 ./bin/problem1_hello
 mpirun -np 4 ./bin/problem1_hello
 
-# Problem 2 (blocking communication)
+# Run Problem 2
 mpirun -np 2 ./bin/problem2_blocking
 
-# Problem 3 (non-blocking communication)
+# Run Problem 3
 mpirun -np 2 ./bin/problem3_nonblocking
 
-# Problem 4 (ring communication)
+# Run Problem 4
 mpirun -np 4 ./bin/problem4_ring
 
-# Problem 5 (2D grid communication)
+# Run Problem 5
 mpirun -np 4 ./bin/problem5_grid
 mpirun -np 4 ./bin/problem5_cartesian
 ```
 
 ---
 
-## Problem 1: Hello World with MPI
+## 3. Problem 1: Hello World with MPI
 
-### What it does:
-Initializes MPI, gets the rank of each process and the total number of processes, prints a message, and finalizes MPI.
+I wrote a simple program using `MPI_Init`, `MPI_Comm_rank`, `MPI_Comm_size`, and `MPI_Finalize`.
 
-### Output:
+### Output with 2 processes:
 ```text
-=== 2 Processes ===
 Hello World from process 0 of 2
 Hello World from process 1 of 2
+```
 
-=== 4 Processes ===
+### Output with 4 processes:
+```text
 Hello World from process 0 of 4
 Hello World from process 1 of 4
 Hello World from process 2 of 4
@@ -57,14 +60,13 @@ Hello World from process 3 of 4
 ```
 
 ### Why different ranks are printed:
-When we run `mpirun -np 4`, four separate copies of the program run at the same time. The MPI runtime assigns each copy a different ID number (rank from 0 to 3). Each process queries its own rank and prints it.
+`mpirun` launches multiple separate instances of the program. The MPI runtime assigns each instance a unique rank from 0 to `size - 1`. When each process calls `MPI_Comm_rank` and prints it, it displays its own rank number.
 
 ---
 
-## Problem 2: Blocking Communication
+## 4. Problem 2: Blocking Communication
 
-### What it does:
-Process 0 sends an array of integers to Process 1 using `MPI_Send`, and Process 1 receives it using `MPI_Recv`. We test three sizes: 1 MB (250,000 ints), 10 MB (2,500,000 ints), and 50 MB (12,500,000 ints). We run 3 trials for each size and measure time using `MPI_Wtime()`.
+I sent integer arrays from Process 0 to Process 1 using `MPI_Send` and received them with `MPI_Recv`. I tested 1 MB (250,000 ints), 10 MB (2,500,000 ints), and 50 MB (12,500,000 ints) for 3 trials each, measuring time with `MPI_Wtime()`.
 
 ### Timing Results:
 
@@ -79,96 +81,82 @@ Process 0 sends an array of integers to Process 1 using `MPI_Send`, and Process 
 
 ### Answers to Questions:
 1. **Why does transfer time increase as message size grows?**  
-   Larger messages have more bytes to copy into memory and send, so it naturally takes more time.
-
+   Bigger messages have more data that needs to be copied into buffers and sent across the network/memory.
 2. **Does doubling the message size always double the time?**  
-   Not always. For small messages, the fixed startup time (latency) is what takes most of the time. For big messages, bandwidth and memory copying matter much more.
-
+   No. For small messages, initial startup latency is the main factor. For large messages, bandwidth and memory copying dominate.
 3. **What influence do latency, bandwidth, and system load have?**  
-   - Latency is the startup delay to begin sending.  
-   - Bandwidth controls how fast data moves once started.  
-   - Memory copying adds CPU time to move data between buffers.  
-   - System load (other running background tasks) causes small timing variations between trials.
-
-4. **What does blocking mean? Does MPI_Send returning mean the receiver got it?**  
-   Blocking means the function waits until its buffer is safe to reuse. `MPI_Send` returning does *not* mean the receiver has already processed the message; it only means the data has left the sender's buffer.
+   Latency sets the minimum time to start a message. Bandwidth determines how fast data flows. System load causes small timing variations between runs.
+4. **What does blocking mean? Does MPI_Send returning mean receiver got the data?**  
+   Blocking means the function waits until its buffer can be reused. `MPI_Send` returning only means the data has left the sender buffer, not that the receiver has finished processing it.
 
 ---
 
-## Problem 3: Non-Blocking Communication and Overlap
+## 5. Problem 3: Non-Blocking Communication and Overlap
 
-### What it does:
-We use `MPI_Isend` and `MPI_Irecv` so communication starts in the background while both processes do some dummy calculations. Then `MPI_Wait` is called to make sure the data transfer finished before reading or freeing the data.
+I used `MPI_Isend` and `MPI_Irecv` to send/receive in the background while both processes ran a dummy calculation loop. Then I used `MPI_Wait` before accessing the data.
 
 ### Comparison Table:
 
-| Message Size | Blocking Time (s) | Non-Blocking Time (s) | Difference / Observation |
+| Message Size | Blocking Time (s) | Non-Blocking Time (s) | Observation |
 | :--- | :--- | :--- | :--- |
-| **1 MB** | 0.119610 | 0.119207 | Almost same (computation took most of the time) |
-| **10 MB** | 0.109266 | 0.111917 | Similar time due to system scheduling noise |
+| **1 MB** | 0.119610 | 0.119207 | Almost same (computation took most time) |
+| **10 MB** | 0.109266 | 0.111917 | Similar time due to OS scheduling noise |
 | **50 MB** | 0.135769 | 0.113964 | **Saved ~0.022 seconds** due to overlap |
 
-### Discussion:
-At 50 MB, the non-blocking version was noticeably faster because the data transfer happened in the background while the CPU was executing the dummy math loop.
+### Observation:
+At 50 MB, non-blocking saved time because communication and computation were running simultaneously instead of one after the other.
 
 ---
 
-## Problem 4: Ring Topology
+## 6. Problem 4: Ring Topology
 
-### What it does:
-Processes form a circle (ring). Each process sends data to its next neighbor and receives from its previous neighbor:
+I arranged 4 processes in a ring where:
 - `next = (rank + 1) % size`
-- `previous = (rank - 1 + size) % size`
+- `prev = (rank - 1 + size) % size`
 
-### Output (4 processes):
-```text
-[Process 0] Neighbors: previous = 3, next = 1
-[Process 1] Neighbors: previous = 0, next = 2
-[Process 2] Neighbors: previous = 1, next = 3
-[Process 3] Neighbors: previous = 2, next = 0
-
---- Method 1: MPI_Sendrecv ---
-[Process 0] Sent 100 to Rank 1 | Received 130 from Rank 3
-[Process 1] Sent 110 to Rank 2 | Received 100 from Rank 0
-[Process 2] Sent 120 to Rank 3 | Received 110 from Rank 1
-[Process 3] Sent 130 to Rank 0 | Received 120 from Rank 2
-```
-
-### Why deadlock happens and how we solved it:
-If all processes call `MPI_Send` at the same time, everyone is waiting for someone else to receive, which creates a deadlock.  
-We solved this in two ways:
-1. `MPI_Sendrecv`: Sends and receives at the same time safely.
-2. Even-Odd ordering: Even ranks send first then receive; odd ranks receive first then send.
-
----
-
-## Problem 5: 2D Grid Topology
-
-### What it does:
-Arranges 4 processes in a 2x2 grid. Coordinates are:
-- `row = rank / 2`
-- `col = rank % 2`
-
-Each process finds its Up, Down, Left, and Right neighbors. If a neighbor is across the boundary, we use `MPI_PROC_NULL`.
-
-### Grid Neighbors:
-- Process 0 at (0, 0): Down = 2, Right = 1 (Up/Left = none)
-- Process 1 at (0, 1): Down = 3, Left = 0 (Up/Right = none)
-- Process 2 at (1, 0): Up = 0, Right = 3 (Down/Left = none)
-- Process 3 at (1, 1): Up = 1, Left = 2 (Down/Right = none)
+### Deadlock and Solution:
+If all processes call `MPI_Send` first, they all block waiting for a receiver, causing a deadlock. I solved this using `MPI_Sendrecv`, which sends and receives simultaneously without blocking.
 
 ### Output:
 ```text
-[Process 0] Grid (0, 0) -> Up: NONE, Down: Rank 2, Left: NONE, Right: Rank 1
-[Process 1] Grid (0, 1) -> Up: NONE, Down: Rank 3, Left: Rank 0, Right: NONE
-[Process 2] Grid (1, 0) -> Up: Rank 0, Down: NONE, Left: NONE, Right: Rank 3
-[Process 3] Grid (1, 1) -> Up: Rank 1, Down: NONE, Left: Rank 2, Right: NONE
-```
+Process 0: previous = 3, next = 1
+Process 1: previous = 0, next = 2
+Process 2: previous = 1, next = 3
+Process 3: previous = 2, next = 0
 
-### Extension:
-We also tested `problem5_cartesian.c` using MPI's built-in `MPI_Cart_create` and `MPI_Cart_shift`, which automatically finds the neighbors and handles boundaries cleanly.
+Process 0 sent 0 to 1 and received 30 from 3
+Process 1 sent 10 to 2 and received 0 from 0
+Process 2 sent 20 to 3 and received 10 from 1
+Process 3 sent 30 to 0 and received 20 from 2
+```
 
 ---
 
-## Conclusion
-In this tutorial, I learned how to create basic MPI programs, measure transfer speeds for different message sizes, overlap communication and computation with non-blocking calls, and design deadlock-free ring and 2D grid topologies.
+## 7. Problem 5: 2D Grid Topology
+
+I mapped 4 processes to a 2x2 grid using:
+- `row = rank / 2`
+- `col = rank % 2`
+
+Each process identified its Up, Down, Left, and Right neighbors, setting boundary edges to `MPI_PROC_NULL`.
+
+### Output:
+```text
+Process 0 at (0, 0) -> Up: -2, Down: 2, Left: -2, Right: 1
+Process 1 at (0, 1) -> Up: -2, Down: 3, Left: 0, Right: -2
+Process 2 at (1, 0) -> Up: 0, Down: -2, Left: -2, Right: 3
+Process 3 at (1, 1) -> Up: 1, Down: -2, Left: 2, Right: -2
+
+Process 0 received -> Up: -1, Down: 200, Left: -1, Right: 100
+Process 1 received -> Up: -1, Down: 300, Left: 0, Right: -1
+Process 2 received -> Up: 0, Down: -1, Left: -1, Right: 300
+Process 3 received -> Up: 100, Down: -1, Left: 200, Right: -1
+```
+*(Note: -2 is `MPI_PROC_NULL`, which means boundary/no neighbor).*
+
+I also implemented `problem5_cartesian.c` using `MPI_Cart_create` and `MPI_Cart_shift`, which handles grid topology coordinates and shifts automatically.
+
+---
+
+## 8. Conclusion
+In this lab, I learned the basics of MPI, measured blocking communication times for different array sizes, overlapped communication with calculation using non-blocking functions, and avoided deadlocks in ring and grid topologies.
